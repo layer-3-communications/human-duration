@@ -1,0 +1,42 @@
+cabal-version: 2.2
+name: human-duration
+version: 0.1.0.0
+synopsis: Human-readable durations
+-- description:
+bug-reports: https://github.com/andrewthad/human-duration/issues
+license: BSD-3-Clause
+license-file: LICENSE
+author: Andrew Martin
+maintainer: andrew.thaddeus@gmail.com
+copyright: 2019 Andrew Martin
+category: Data
+build-type: Simple
+extra-source-files: CHANGELOG.md
+
+library
+  exposed-modules: Data.Duration.Human
+  build-depends:
+    , base >=4.13 && <4.14
+    , bytesmith >=0.3.2 && <0.4
+    , byteslice >=0.1.3 && <0.3
+    , chronos >=1.0 && <1.2
+    , small-bytearray-builder >=0.3.1 && <0.4
+    , natural-arithmetic >=0.1.1 && <0.2
+  hs-source-dirs: src
+  default-language: Haskell2010
+
+test-suite test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Main.hs
+  ghc-options: -Wall -O2
+  build-depends:
+    , base >=4.12.0.0 && <5
+    , byteslice >=0.1.3
+    , human-duration
+    , natural-arithmetic
+    , small-bytearray-builder
+    , tasty >=1.2.3 && <1.3
+    , tasty-quickcheck >=0.10.1 && <0.11
+    , text >=1.2
