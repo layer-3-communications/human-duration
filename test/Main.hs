@@ -10,7 +10,7 @@ import Test.Tasty.QuickCheck ((===))
 import qualified Arithmetic.Nat as Nat
 import qualified Data.Bytes as Bytes
 import qualified Data.Duration.Human as D
-import qualified Data.ByteArray.Builder.Bounded as BD
+import qualified Data.Bytes.Builder.Bounded as BD
 import qualified Test.Tasty.QuickCheck as QC
 
 main :: IO ()

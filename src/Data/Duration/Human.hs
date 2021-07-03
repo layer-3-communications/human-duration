@@ -24,7 +24,7 @@ import Data.Bytes.Parser (Parser)
 import Data.Bytes (Bytes)
 
 import qualified Arithmetic.Lte as Lte
-import qualified Data.ByteArray.Builder.Bounded as BD
+import qualified Data.Bytes.Builder.Bounded as BD
 import qualified Data.Bytes.Parser as P
 import qualified Data.Bytes.Parser.Latin as Latin
 
