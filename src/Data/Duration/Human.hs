@@ -19,14 +19,18 @@ module Data.Duration.Human
   ) where
 
 import Chronos (Timespan(Timespan))
-import Data.Int (Int64)
-import Data.Bytes.Parser (Parser)
+import Data.Aeson (FromJSON)
 import Data.Bytes (Bytes)
+import Data.Bytes.Parser (Parser)
+import Data.Int (Int64)
+import Data.Text (Text)
 
 import qualified Arithmetic.Lte as Lte
+import qualified Data.Aeson as Aeson
 import qualified Data.Bytes.Builder.Bounded as BD
 import qualified Data.Bytes.Parser as P
 import qualified Data.Bytes.Parser.Latin as Latin
+import qualified Data.Bytes.Text.Utf8 as Utf8
 
 data Duration = Duration !Measure !Int64
   deriving stock (Show,Eq)
@@ -78,6 +82,13 @@ builderMeasure_abbrev = \case
   Hours -> BD.weaken Lte.constant (BD.ascii 'h')
   Days -> BD.weaken Lte.constant (BD.ascii 'd')
   Weeks -> BD.weaken Lte.constant (BD.ascii 'w')
+
+instance FromJSON Duration where
+  parseJSON = Aeson.withText "Duration" $ \t ->
+    maybe (fail "could not decode duration") pure (decodeText t)
+
+decodeText :: Text -> Maybe Duration
+decodeText = decodeUtf8 . Utf8.fromText
 
 decodeUtf8 :: Bytes -> Maybe Duration
 decodeUtf8 = P.parseBytesMaybe (parserUtf8 ())

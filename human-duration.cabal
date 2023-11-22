@@ -1,6 +1,6 @@
 cabal-version: 2.2
 name: human-duration
-version: 0.1.0.0
+version: 0.1.1.0
 synopsis: Human-readable durations
 -- description:
 bug-reports: https://github.com/andrewthad/human-duration/issues
@@ -22,6 +22,8 @@ library
     , chronos >=1.0 && <1.2
     , bytebuild >=0.3.8 && <0.4
     , natural-arithmetic >=0.1.1 && <0.2
+    , aeson >=2.1
+    , text >=2.0
   hs-source-dirs: src
   default-language: Haskell2010
 
