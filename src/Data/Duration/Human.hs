@@ -16,21 +16,29 @@ module Data.Duration.Human
   , decodeUtf8
     -- * Encode
   , boundedBuilderUtf8
+  , shortText
+  , text
   ) where
 
 import Chronos (Timespan(Timespan))
-import Data.Aeson (FromJSON)
+import Data.Aeson (FromJSON,ToJSON)
 import Data.Bytes (Bytes)
 import Data.Bytes.Parser (Parser)
 import Data.Int (Int64)
+import Data.Primitive (ByteArray(ByteArray))
 import Data.Text (Text)
+import Data.Text.Short (ShortText)
+import Data.ByteString.Short.Internal (ShortByteString(SBS))
 
 import qualified Arithmetic.Lte as Lte
+import qualified Arithmetic.Nat as Nat
 import qualified Data.Aeson as Aeson
 import qualified Data.Bytes.Builder.Bounded as BD
 import qualified Data.Bytes.Parser as P
 import qualified Data.Bytes.Parser.Latin as Latin
 import qualified Data.Bytes.Text.Utf8 as Utf8
+import qualified Data.Text.Short as TS
+import qualified Data.Text.Short.Unsafe as TS
 
 data Duration = Duration !Measure !Int64
   deriving stock (Show,Eq)
@@ -66,6 +74,13 @@ multiplier = \case
 boundedBuilderUtf8 :: Duration -> BD.Builder 22
 boundedBuilderUtf8 = builder_abbrev
 
+shortText :: Duration -> ShortText
+shortText d = case BD.run Nat.constant (boundedBuilderUtf8 d) of
+  ByteArray x -> TS.fromShortByteStringUnsafe (SBS x)
+
+text :: Duration -> Text
+text = TS.toText . shortText
+
 builder_abbrev :: Duration -> BD.Builder 22
 builder_abbrev (Duration msr n) =
   BD.int64Dec n
@@ -86,6 +101,9 @@ builderMeasure_abbrev = \case
 instance FromJSON Duration where
   parseJSON = Aeson.withText "Duration" $ \t ->
     maybe (fail "could not decode duration") pure (decodeText t)
+
+instance ToJSON Duration where
+  toJSON = Aeson.String . text
 
 decodeText :: Text -> Maybe Duration
 decodeText = decodeUtf8 . Utf8.fromText
